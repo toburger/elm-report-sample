@@ -2,14 +2,14 @@ module Main exposing (..)
 
 import Report.Report as Report
 import Types exposing (..)
-import Utils
 import Html
+import Rest
 import Views exposing (view)
 
 
 initialModel : ( Model, Cmd Msg )
 initialModel =
-    ( Model Nothing, fetchReport )
+    ( Model Nothing, Rest.fetchReport )
 
 
 updateOwn : (Currency -> Currency) -> Row -> Row
@@ -51,11 +51,6 @@ updateReportValue f report =
         |> Report.map (updateOwn f)
         |> Report.map (updateOtherMedian f)
         |> Report.map (updateOtherAverage f)
-
-
-fetchReport : Cmd Msg
-fetchReport =
-    Utils.fetchReport Fetched
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
