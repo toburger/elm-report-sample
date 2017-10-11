@@ -37,10 +37,83 @@ type alias Report =
 
 
 type alias Model =
-    { report : Maybe Report }
+    { report : Maybe Report
+    , filter : Filter
+    , level : Level
+    }
 
 
-type Msg
-    = Increment
-    | Decrement
+type Msg filterMsg
+    = Fetch
     | Fetched (Result Http.Error Report)
+    | SetFilter filterMsg
+    | SetLevel Level
+
+
+type Level
+    = First
+    | Second
+    | Third
+    | Fourth
+    | Fifth
+
+
+incrementLevel : Level -> Level
+incrementLevel level =
+    case level of
+        First ->
+            Second
+
+        Second ->
+            Third
+
+        Third ->
+            Fourth
+
+        Fourth ->
+            Fifth
+
+        Fifth ->
+            First
+
+
+toInt : Level -> Int
+toInt level =
+    case level of
+        First ->
+            1
+
+        Second ->
+            2
+
+        Third ->
+            3
+
+        Fourth ->
+            4
+
+        Fifth ->
+            5
+
+
+type alias CompanyId =
+    { seacNumber : String, ombisId : Int }
+
+
+type alias DateRange =
+    { fromYear : Int, fromMonth : Int, untilYear : Int, untilMonth : Int }
+
+
+type alias Companies =
+    { ownCompanyId : CompanyId
+    , typeFilteredCompanyIds : List CompanyId
+    , geoFilteredCompanyIds : List CompanyId
+    }
+
+
+type alias Filter =
+    { companyType : Int
+    , bookkeeping : Int
+    , dateRange : DateRange
+    , companies : Companies
+    }

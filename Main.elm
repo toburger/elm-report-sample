@@ -1,75 +1,59 @@
 module Main exposing (..)
 
-import Report.Report as Report
 import Types exposing (..)
 import Html
 import Rest
 import Views exposing (view)
+import Filter
+
+
+type alias Msg =
+    Types.Msg Filter.Msg
+
+
+initialFilter : Filter
+initialFilter =
+    { companyType = 1
+    , bookkeeping = 1
+    , dateRange =
+        { fromYear = 2016
+        , fromMonth = 1
+        , untilYear = 2016
+        , untilMonth = 12
+        }
+    , companies =
+        { ownCompanyId =
+            { seacNumber = "3921V35154", ombisId = 8609 }
+        , typeFilteredCompanyIds =
+            [ { seacNumber = "3921V22004", ombisId = 23617 }
+            , { seacNumber = "3921V35154", ombisId = 8609 }
+            , { seacNumber = "3922V23408", ombisId = 8690 }
+            ]
+        , geoFilteredCompanyIds =
+            [ { seacNumber = "3921V22004", ombisId = 23617 }
+            , { seacNumber = "3921V35154", ombisId = 8609 }
+            , { seacNumber = "3922V23408", ombisId = 8690 }
+            ]
+        }
+    }
 
 
 initialModel : ( Model, Cmd Msg )
 initialModel =
-    ( Model Nothing, Rest.fetchReport )
-
-
-updateOwn : (Currency -> Currency) -> Row -> Row
-updateOwn f row =
-    let
-        ( value, percentage ) =
-            row.own
-    in
-        { row | own = ( f value, percentage ) }
-
-
-updateOtherMedian : (Currency -> Currency) -> Row -> Row
-updateOtherMedian f row =
-    let
-        other =
-            row.other
-
-        ( median, percentage ) =
-            row.other.median
-    in
-        { row | other = { other | median = ( f median, percentage ) } }
-
-
-updateOtherAverage : (Currency -> Currency) -> Row -> Row
-updateOtherAverage f row =
-    let
-        other =
-            row.other
-
-        ( average, percentage ) =
-            row.other.average
-    in
-        { row | other = { other | average = ( f average, percentage ) } }
-
-
-updateReportValue : (Currency -> Currency) -> Report -> Report
-updateReportValue f report =
-    report
-        |> Report.map (updateOwn f)
-        |> Report.map (updateOtherMedian f)
-        |> Report.map (updateOtherAverage f)
+    ( Model Nothing initialFilter Third, Rest.fetchReport initialFilter )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Increment ->
-            { model
-                | report = Maybe.map (updateReportValue ((+) 1)) model.report
-            }
-                ! []
-
-        Decrement ->
-            { model
-                | report = Maybe.map (updateReportValue (flip (-) 1)) model.report
-            }
-                ! []
+        Fetch ->
+            { model | report = Nothing } ! [ Rest.fetchReport model.filter ]
 
         Fetched (Ok report) ->
             { model | report = Just report } ! []
+
+        SetFilter filterMsg ->
+            { model | filter = Filter.update filterMsg model.filter } ! []
 
         Fetched (Err msg) ->
             let
@@ -78,6 +62,9 @@ update msg model =
             in
                 { model | report = Nothing }
                     ! []
+
+        SetLevel level ->
+            { model | level = level } ! []
 
 
 main : Program Never Model Msg

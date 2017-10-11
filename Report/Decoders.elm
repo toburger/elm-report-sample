@@ -12,7 +12,7 @@ account valueDecoder =
     decode Account.create
         |> required "name" Json.string
         |> required "subAccounts" (Json.lazy (\_ -> accountList valueDecoder))
-        |> required "sum" (Json.lazy (\_ -> Json.maybe (account valueDecoder)))
+        |> optional "sum" (Json.lazy (\_ -> Json.maybe (account valueDecoder))) Nothing
         |> required "value" valueDecoder
 
 

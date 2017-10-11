@@ -8854,6 +8854,9 @@ var _elm_lang$html$Html_Events$Options = F2(
 	function (a, b) {
 		return {stopPropagation: a, preventDefault: b};
 	});
+var _elm_lang$html$Html_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
+var _elm_lang$html$Html_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
+var _elm_lang$html$Html_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
 var _elm_lang$http$Native_Http = function() {
 
 
@@ -10239,6 +10242,21 @@ var _user$project$Report_Report$create = F2(
 	function (name, sections) {
 		return A2(_user$project$Report_Report$Report, name, sections);
 	});
+var _user$project$Types$toInt = function (level) {
+	var _p0 = level;
+	switch (_p0.ctor) {
+		case 'First':
+			return 1;
+		case 'Second':
+			return 2;
+		case 'Third':
+			return 3;
+		case 'Fourth':
+			return 4;
+		default:
+			return 5;
+	}
+};
 var _user$project$Types$Calculation = F4(
 	function (a, b, c, d) {
 		return {count: a, sum: b, median: c, average: d};
@@ -10247,14 +10265,56 @@ var _user$project$Types$Row = F4(
 	function (a, b, c, d) {
 		return {numbers: a, own: b, other: c, geo: d};
 	});
-var _user$project$Types$Model = function (a) {
-	return {report: a};
+var _user$project$Types$Model = F3(
+	function (a, b, c) {
+		return {report: a, filter: b, level: c};
+	});
+var _user$project$Types$CompanyId = F2(
+	function (a, b) {
+		return {seacNumber: a, ombisId: b};
+	});
+var _user$project$Types$DateRange = F4(
+	function (a, b, c, d) {
+		return {fromYear: a, fromMonth: b, untilYear: c, untilMonth: d};
+	});
+var _user$project$Types$Companies = F3(
+	function (a, b, c) {
+		return {ownCompanyId: a, typeFilteredCompanyIds: b, geoFilteredCompanyIds: c};
+	});
+var _user$project$Types$Filter = F4(
+	function (a, b, c, d) {
+		return {companyType: a, bookkeeping: b, dateRange: c, companies: d};
+	});
+var _user$project$Types$SetLevel = function (a) {
+	return {ctor: 'SetLevel', _0: a};
+};
+var _user$project$Types$SetFilter = function (a) {
+	return {ctor: 'SetFilter', _0: a};
 };
 var _user$project$Types$Fetched = function (a) {
 	return {ctor: 'Fetched', _0: a};
 };
-var _user$project$Types$Decrement = {ctor: 'Decrement'};
-var _user$project$Types$Increment = {ctor: 'Increment'};
+var _user$project$Types$Fetch = {ctor: 'Fetch'};
+var _user$project$Types$Fifth = {ctor: 'Fifth'};
+var _user$project$Types$Fourth = {ctor: 'Fourth'};
+var _user$project$Types$Third = {ctor: 'Third'};
+var _user$project$Types$Second = {ctor: 'Second'};
+var _user$project$Types$First = {ctor: 'First'};
+var _user$project$Types$incrementLevel = function (level) {
+	var _p1 = level;
+	switch (_p1.ctor) {
+		case 'First':
+			return _user$project$Types$Second;
+		case 'Second':
+			return _user$project$Types$Third;
+		case 'Third':
+			return _user$project$Types$Fourth;
+		case 'Fourth':
+			return _user$project$Types$Fifth;
+		default:
+			return _user$project$Types$First;
+	}
+};
 var _user$project$Decoders$arrayAsTuple2 = F2(
 	function (a, b) {
 		return A2(
@@ -10307,19 +10367,404 @@ var _user$project$Decoders$row = A3(
 				'numbers',
 				_elm_lang$core$Json_Decode$list(_user$project$Decoders$number),
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Types$Row)))));
+var _user$project$Encoders_ops = _user$project$Encoders_ops || {};
+_user$project$Encoders_ops['=>'] = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _user$project$Encoders$companyId = function (companyId) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: A2(
+				_user$project$Encoders_ops['=>'],
+				'seacNumber',
+				_elm_lang$core$Json_Encode$string(companyId.seacNumber)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Encoders_ops['=>'],
+					'ombisId',
+					_elm_lang$core$Json_Encode$int(companyId.ombisId)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Encoders$dateRange = function (dateRange) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: A2(
+				_user$project$Encoders_ops['=>'],
+				'fromYear',
+				_elm_lang$core$Json_Encode$int(dateRange.fromYear)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Encoders_ops['=>'],
+					'fromMonth',
+					_elm_lang$core$Json_Encode$int(dateRange.fromMonth)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_user$project$Encoders_ops['=>'],
+						'untilYear',
+						_elm_lang$core$Json_Encode$int(dateRange.untilYear)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_user$project$Encoders_ops['=>'],
+							'untilMonth',
+							_elm_lang$core$Json_Encode$int(dateRange.untilMonth)),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Encoders$companies = function (companies) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: A2(
+				_user$project$Encoders_ops['=>'],
+				'ownCompanyId',
+				_user$project$Encoders$companyId(companies.ownCompanyId)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Encoders_ops['=>'],
+					'typeFilteredCompanyIds',
+					_elm_lang$core$Json_Encode$list(
+						A2(_elm_lang$core$List$map, _user$project$Encoders$companyId, companies.typeFilteredCompanyIds))),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_user$project$Encoders_ops['=>'],
+						'geoFilteredCompanyIds',
+						_elm_lang$core$Json_Encode$list(
+							A2(_elm_lang$core$List$map, _user$project$Encoders$companyId, companies.geoFilteredCompanyIds))),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Encoders$filter = function (filter) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: A2(
+				_user$project$Encoders_ops['=>'],
+				'companyType',
+				_elm_lang$core$Json_Encode$int(filter.companyType)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Encoders_ops['=>'],
+					'bookkeeping',
+					_elm_lang$core$Json_Encode$int(filter.bookkeeping)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_user$project$Encoders_ops['=>'],
+						'dateRange',
+						_user$project$Encoders$dateRange(filter.dateRange)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_user$project$Encoders_ops['=>'],
+							'companies',
+							_user$project$Encoders$companies(filter.companies)),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Filter$updateUntilMonth = F2(
+	function (dateRange, untilMonth) {
+		return _elm_lang$core$Native_Utils.update(
+			dateRange,
+			{untilMonth: untilMonth});
+	});
+var _user$project$Filter$updateUntilYear = F2(
+	function (dateRange, untilYear) {
+		return _elm_lang$core$Native_Utils.update(
+			dateRange,
+			{untilYear: untilYear});
+	});
+var _user$project$Filter$updateFromMonth = F2(
+	function (dateRange, fromMonth) {
+		return _elm_lang$core$Native_Utils.update(
+			dateRange,
+			{fromMonth: fromMonth});
+	});
+var _user$project$Filter$updateFromYear = F2(
+	function (dateRange, fromYear) {
+		return _elm_lang$core$Native_Utils.update(
+			dateRange,
+			{fromYear: fromYear});
+	});
+var _user$project$Filter$updateDateRange = F2(
+	function (filter, dateRange) {
+		return _elm_lang$core$Native_Utils.update(
+			filter,
+			{dateRange: dateRange});
+	});
+var _user$project$Filter$viewMonths = function (selectedMonth) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (month) {
+			return A2(
+				_elm_lang$html$Html$option,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$id(
+						_elm_lang$core$Basics$toString(month)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$selected(
+							_elm_lang$core$Native_Utils.eq(month, selectedMonth)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(month)),
+					_1: {ctor: '[]'}
+				});
+		},
+		A2(_elm_lang$core$List$range, 1, 12));
+};
+var _user$project$Filter$viewYears = function (selectedYear) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (year) {
+			return A2(
+				_elm_lang$html$Html$option,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$id(
+						_elm_lang$core$Basics$toString(year)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$selected(
+							_elm_lang$core$Native_Utils.eq(year, selectedYear)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(year)),
+					_1: {ctor: '[]'}
+				});
+		},
+		A2(_elm_lang$core$List$range, 2010, 2020));
+};
+var _user$project$Filter$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		return _p0._0;
+	});
+var _user$project$Filter$UpdateFilter = function (a) {
+	return {ctor: 'UpdateFilter', _0: a};
+};
+var _user$project$Filter$dateRangeMsg = F2(
+	function (f, filter) {
+		return function (_p1) {
+			return function (_p2) {
+				return _user$project$Filter$UpdateFilter(
+					A2(
+						_user$project$Filter$updateDateRange,
+						filter,
+						A2(f, filter.dateRange, _p2)));
+			}(
+				A2(
+					_elm_lang$core$Result$withDefault,
+					filter.dateRange.fromYear,
+					_elm_lang$core$String$toInt(_p1)));
+		};
+	});
+var _user$project$Filter$view = function (filter) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$label,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$for('fromYear'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('From Year'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$select,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$id('fromYear'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(
+										A2(_user$project$Filter$dateRangeMsg, _user$project$Filter$updateFromYear, filter)),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$value(
+											_elm_lang$core$Basics$toString(filter.dateRange.fromYear)),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							_user$project$Filter$viewYears(filter.dateRange.fromYear)),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$for('fromMonth'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('From Month'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$select,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$id('fromMonth'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(
+												A2(_user$project$Filter$dateRangeMsg, _user$project$Filter$updateFromMonth, filter)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$value(
+													_elm_lang$core$Basics$toString(filter.dateRange.fromMonth)),
+												_1: {ctor: '[]'}
+											}
+										}
+									},
+									_user$project$Filter$viewMonths(filter.dateRange.fromMonth)),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$label,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$for('untilYear'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Until Year'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$select,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$id('untilYear'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(
+											A2(_user$project$Filter$dateRangeMsg, _user$project$Filter$updateUntilYear, filter)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$value(
+												_elm_lang$core$Basics$toString(filter.dateRange.untilYear)),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								_user$project$Filter$viewYears(filter.dateRange.untilYear)),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$label,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$for('untilMonth'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Until Month'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$select,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$id('untilMonth'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(
+													A2(_user$project$Filter$dateRangeMsg, _user$project$Filter$updateUntilMonth, filter)),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$value(
+														_elm_lang$core$Basics$toString(filter.dateRange.untilMonth)),
+													_1: {ctor: '[]'}
+												}
+											}
+										},
+										_user$project$Filter$viewMonths(filter.dateRange.untilMonth)),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Report_Decoders$account = function (valueDecoder) {
 	return A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'value',
 		valueDecoder,
-		A3(
-			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		A4(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 			'sum',
 			_elm_lang$core$Json_Decode$lazy(
 				function (_p0) {
 					return _elm_lang$core$Json_Decode$maybe(
 						_user$project$Report_Decoders$account(valueDecoder));
 				}),
+			_elm_lang$core$Maybe$Nothing,
 			A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 				'subAccounts',
@@ -10367,14 +10812,17 @@ var _user$project$Report_Decoders$report = function (valueDecoder) {
 			_elm_lang$core$Json_Decode$string,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Report_Report$create)));
 };
-var _user$project$Rest$fetchReport = function () {
-	var url = './api/data.json';
-	var request = A2(
-		_elm_lang$http$Http$get,
+var _user$project$Rest$fetchReport = function (filter) {
+	var body = _elm_lang$http$Http$jsonBody(
+		_user$project$Encoders$filter(filter));
+	var url = 'http://localhost:8083/api/reports/benchmark/investmentSuccessBalance';
+	var request = A3(
+		_elm_lang$http$Http$post,
 		url,
+		body,
 		_user$project$Report_Decoders$report(_user$project$Decoders$row));
 	return A2(_elm_lang$http$Http$send, _user$project$Types$Fetched, request);
-}();
+};
 var _user$project$Styles_ops = _user$project$Styles_ops || {};
 _user$project$Styles_ops['=>'] = F2(
 	function (v0, v1) {
@@ -10444,6 +10892,96 @@ var _user$project$Styles$rightBorder = _elm_lang$html$Html_Attributes$style(
 		_0: A2(_user$project$Styles_ops['=>'], 'border-right', '1px solid black'),
 		_1: {ctor: '[]'}
 	});
+var _user$project$Views$viewLevel = function (level) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(
+						_user$project$Types$SetLevel(_user$project$Types$First)),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$disabled(
+							_elm_lang$core$Native_Utils.eq(level, _user$project$Types$First)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Level 1'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$Types$SetLevel(_user$project$Types$Second)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$disabled(
+								_elm_lang$core$Native_Utils.eq(level, _user$project$Types$Second)),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Level 2'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Types$SetLevel(_user$project$Types$Third)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$disabled(
+									_elm_lang$core$Native_Utils.eq(level, _user$project$Types$Third)),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Level 3'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Types$SetLevel(_user$project$Types$Fourth)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$disabled(
+										_elm_lang$core$Native_Utils.eq(level, _user$project$Types$Fourth)),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Level 4'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
 var _user$project$Views$viewCaption = function (caption) {
 	return A2(
 		_elm_lang$html$Html$th,
@@ -10598,46 +11136,53 @@ var _user$project$Views$viewOther = F2(
 			}
 		};
 	});
-var _user$project$Views$viewAccount = function (_p6) {
-	var _p7 = _p6;
-	var _p9 = _p7._0.value;
-	var _p8 = _p7._0.name;
-	return {
-		ctor: '::',
-		_0: A2(
-			_elm_lang$html$Html$tr,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$title(
-					_user$project$Views$viewNumbers(_p9.numbers)),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$th,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(_p8),
-						_1: {ctor: '[]'}
-					}),
-				_1: A2(
-					_elm_lang$core$Basics_ops['++'],
-					_user$project$Views$viewOwn(_p9.own),
-					A2(
+var _user$project$Views$viewAccount = F3(
+	function (level, index, _p6) {
+		var _p7 = _p6;
+		var _p9 = _p7._0.value;
+		var _p8 = _p7._0.name;
+		return (_elm_lang$core$Native_Utils.cmp(
+			_user$project$Types$toInt(index),
+			_user$project$Types$toInt(level)) < 1) ? {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$tr,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$title(
+						_user$project$Views$viewNumbers(_p9.numbers)),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$th,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(_p8),
+							_1: {ctor: '[]'}
+						}),
+					_1: A2(
 						_elm_lang$core$Basics_ops['++'],
-						A2(_user$project$Views$viewOther, _p8, _p9.other),
-						A2(_user$project$Views$viewOther, _p8, _p9.geo)))
-			}),
-		_1: A2(_elm_lang$core$List$concatMap, _user$project$Views$viewAccount, _p7._0.subAccounts)
-	};
-};
-var _user$project$Views$viewSection = function (section) {
-	return A2(
-		_elm_lang$html$Html$tbody,
-		{ctor: '[]'},
-		{
+						_user$project$Views$viewOwn(_p9.own),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							A2(_user$project$Views$viewOther, _p8, _p9.other),
+							A2(_user$project$Views$viewOther, _p8, _p9.geo)))
+				}),
+			_1: A2(
+				_elm_lang$core$List$concatMap,
+				A2(
+					_user$project$Views$viewAccount,
+					level,
+					_user$project$Types$incrementLevel(index)),
+				_p7._0.subAccounts)
+		} : {ctor: '[]'};
+	});
+var _user$project$Views$viewSection = F3(
+	function (level, index, section) {
+		return {
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$tr,
@@ -10649,76 +11194,159 @@ var _user$project$Views$viewSection = function (section) {
 				}),
 			_1: A2(
 				_elm_lang$core$Basics_ops['++'],
-				A2(_elm_lang$core$List$concatMap, _user$project$Views$viewAccount, section.accounts),
-				_user$project$Views$viewAccount(section.sum))
-		});
-};
-var _user$project$Views$view = function (model) {
-	var _p10 = model.report;
-	if (_p10.ctor === 'Just') {
+				A2(
+					_elm_lang$core$List$concatMap,
+					A2(
+						_user$project$Views$viewAccount,
+						level,
+						_user$project$Types$incrementLevel(index)),
+					section.accounts),
+				A3(_user$project$Views$viewAccount, level, index, section.sum))
+		};
+	});
+var _user$project$Views$viewReport = F2(
+	function (level, report) {
 		return A2(
-			_elm_lang$html$Html$div,
-			{ctor: '[]'},
+			_elm_lang$html$Html$table,
 			{
 				ctor: '::',
-				_0: A3(
-					_elm_lang$html$Html$node,
-					'style',
+				_0: _user$project$Styles$tableStyle,
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$thead,
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('td { padding: 4px }'),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$table,
-						{
-							ctor: '::',
-							_0: _user$project$Styles$tableStyle,
-							_1: {ctor: '[]'}
-						},
-						{
+						_0: A2(
+							_elm_lang$html$Html$tr,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$th,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$th,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$colspan(2),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$rowspan(2),
+												_1: {
+													ctor: '::',
+													_0: _user$project$Styles$leftBorder,
+													_1: {
+														ctor: '::',
+														_0: _user$project$Styles$rightBorder,
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Current'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$th,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$colspan(4),
+												_1: {
+													ctor: '::',
+													_0: _user$project$Styles$leftBorder,
+													_1: {
+														ctor: '::',
+														_0: _user$project$Styles$rightBorder,
+														_1: {ctor: '[]'}
+													}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Other'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$th,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$colspan(4),
+													_1: {
+														ctor: '::',
+														_0: _user$project$Styles$leftBorder,
+														_1: {
+															ctor: '::',
+															_0: _user$project$Styles$rightBorder,
+															_1: {ctor: '[]'}
+														}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Geo'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}),
+						_1: {
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$thead,
+								_elm_lang$html$Html$tr,
 								{ctor: '[]'},
 								{
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$tr,
+										_elm_lang$html$Html$th,
 										{ctor: '[]'},
-										{
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$th,
+											{
+												ctor: '::',
+												_0: _user$project$Styles$leftBorder,
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('median'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
 											ctor: '::',
 											_0: A2(
 												_elm_lang$html$Html$th,
 												{ctor: '[]'},
-												{ctor: '[]'}),
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('% median'),
+													_1: {ctor: '[]'}
+												}),
 											_1: {
 												ctor: '::',
 												_0: A2(
 													_elm_lang$html$Html$th,
+													{ctor: '[]'},
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$colspan(2),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$rowspan(2),
-															_1: {
-																ctor: '::',
-																_0: _user$project$Styles$leftBorder,
-																_1: {
-																	ctor: '::',
-																	_0: _user$project$Styles$rightBorder,
-																	_1: {ctor: '[]'}
-																}
-															}
-														}
-													},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text('Current'),
+														_0: _elm_lang$html$Html$text('average'),
 														_1: {ctor: '[]'}
 													}),
 												_1: {
@@ -10727,20 +11355,12 @@ var _user$project$Views$view = function (model) {
 														_elm_lang$html$Html$th,
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$colspan(4),
-															_1: {
-																ctor: '::',
-																_0: _user$project$Styles$leftBorder,
-																_1: {
-																	ctor: '::',
-																	_0: _user$project$Styles$rightBorder,
-																	_1: {ctor: '[]'}
-																}
-															}
+															_0: _user$project$Styles$rightBorder,
+															_1: {ctor: '[]'}
 														},
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html$text('Other'),
+															_0: _elm_lang$html$Html$text('% average'),
 															_1: {ctor: '[]'}
 														}),
 													_1: {
@@ -10749,60 +11369,12 @@ var _user$project$Views$view = function (model) {
 															_elm_lang$html$Html$th,
 															{
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$colspan(4),
-																_1: {
-																	ctor: '::',
-																	_0: _user$project$Styles$leftBorder,
-																	_1: {
-																		ctor: '::',
-																		_0: _user$project$Styles$rightBorder,
-																		_1: {ctor: '[]'}
-																	}
-																}
+																_0: _user$project$Styles$leftBorder,
+																_1: {ctor: '[]'}
 															},
 															{
 																ctor: '::',
-																_0: _elm_lang$html$Html$text('Geo'),
-																_1: {ctor: '[]'}
-															}),
-														_1: {ctor: '[]'}
-													}
-												}
-											}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$tr,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$th,
-													{ctor: '[]'},
-													{ctor: '[]'}),
-												_1: {
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$th,
-														{
-															ctor: '::',
-															_0: _user$project$Styles$leftBorder,
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text('median'),
-															_1: {ctor: '[]'}
-														}),
-													_1: {
-														ctor: '::',
-														_0: A2(
-															_elm_lang$html$Html$th,
-															{ctor: '[]'},
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html$text('% median'),
+																_0: _elm_lang$html$Html$text('median'),
 																_1: {ctor: '[]'}
 															}),
 														_1: {
@@ -10812,21 +11384,17 @@ var _user$project$Views$view = function (model) {
 																{ctor: '[]'},
 																{
 																	ctor: '::',
-																	_0: _elm_lang$html$Html$text('average'),
+																	_0: _elm_lang$html$Html$text('% median'),
 																	_1: {ctor: '[]'}
 																}),
 															_1: {
 																ctor: '::',
 																_0: A2(
 																	_elm_lang$html$Html$th,
+																	{ctor: '[]'},
 																	{
 																		ctor: '::',
-																		_0: _user$project$Styles$rightBorder,
-																		_1: {ctor: '[]'}
-																	},
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html$text('% average'),
+																		_0: _elm_lang$html$Html$text('average'),
 																		_1: {ctor: '[]'}
 																	}),
 																_1: {
@@ -10835,219 +11403,145 @@ var _user$project$Views$view = function (model) {
 																		_elm_lang$html$Html$th,
 																		{
 																			ctor: '::',
-																			_0: _user$project$Styles$leftBorder,
+																			_0: _user$project$Styles$rightBorder,
 																			_1: {ctor: '[]'}
 																		},
 																		{
 																			ctor: '::',
-																			_0: _elm_lang$html$Html$text('median'),
+																			_0: _elm_lang$html$Html$text('% average'),
 																			_1: {ctor: '[]'}
 																		}),
-																	_1: {
-																		ctor: '::',
-																		_0: A2(
-																			_elm_lang$html$Html$th,
-																			{ctor: '[]'},
-																			{
-																				ctor: '::',
-																				_0: _elm_lang$html$Html$text('% median'),
-																				_1: {ctor: '[]'}
-																			}),
-																		_1: {
-																			ctor: '::',
-																			_0: A2(
-																				_elm_lang$html$Html$th,
-																				{ctor: '[]'},
-																				{
-																					ctor: '::',
-																					_0: _elm_lang$html$Html$text('average'),
-																					_1: {ctor: '[]'}
-																				}),
-																			_1: {
-																				ctor: '::',
-																				_0: A2(
-																					_elm_lang$html$Html$th,
-																					{
-																						ctor: '::',
-																						_0: _user$project$Styles$rightBorder,
-																						_1: {ctor: '[]'}
-																					},
-																					{
-																						ctor: '::',
-																						_0: _elm_lang$html$Html$text('% average'),
-																						_1: {ctor: '[]'}
-																					}),
-																				_1: {ctor: '[]'}
-																			}
-																		}
-																	}
+																	_1: {ctor: '[]'}
 																}
 															}
 														}
 													}
 												}
-											}),
-										_1: {ctor: '[]'}
+											}
+										}
 									}
 								}),
-							_1: A2(_elm_lang$core$List$map, _user$project$Views$viewSection, _p10._0.sections)
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$tbody,
+						{ctor: '[]'},
+						A2(
+							_elm_lang$core$List$concatMap,
+							A2(_user$project$Views$viewSection, level, _user$project$Types$First),
+							report.sections)),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Views$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A3(
+				_elm_lang$html$Html$node,
+				'style',
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('td, th { padding: 4px }'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html_Lazy$lazy,
+					_elm_lang$html$Html$map(_user$project$Types$SetFilter),
+					_user$project$Filter$view(model.filter)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Fetch),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Filter'),
+							_1: {ctor: '[]'}
 						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$button,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Increment),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('+'),
-								_1: {ctor: '[]'}
-							}),
+							_elm_lang$html$Html$hr,
+							{ctor: '[]'},
+							{ctor: '[]'}),
 						_1: {
 							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$button,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Decrement),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('-'),
-									_1: {ctor: '[]'}
-								}),
+							_0: function () {
+								var _p10 = model.report;
+								if (_p10.ctor === 'Just') {
+									return A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Views$viewLevel, model.level),
+											_1: {
+												ctor: '::',
+												_0: A3(_elm_lang$html$Html_Lazy$lazy2, _user$project$Views$viewReport, model.level, _p10._0),
+												_1: {ctor: '[]'}
+											}
+										});
+								} else {
+									return _elm_lang$html$Html$text('');
+								}
+							}(),
 							_1: {ctor: '[]'}
 						}
 					}
 				}
-			});
-	} else {
-		return _elm_lang$html$Html$text('');
-	}
+			}
+		});
 };
-var _user$project$Main$updateOtherAverage = F2(
-	function (f, row) {
-		var _p0 = row.other.average;
-		var average = _p0._0;
-		var percentage = _p0._1;
-		var other = row.other;
-		return _elm_lang$core$Native_Utils.update(
-			row,
-			{
-				other: _elm_lang$core$Native_Utils.update(
-					other,
-					{
-						average: {
-							ctor: '_Tuple2',
-							_0: f(average),
-							_1: percentage
-						}
-					})
-			});
-	});
-var _user$project$Main$updateOtherMedian = F2(
-	function (f, row) {
-		var _p1 = row.other.median;
-		var median = _p1._0;
-		var percentage = _p1._1;
-		var other = row.other;
-		return _elm_lang$core$Native_Utils.update(
-			row,
-			{
-				other: _elm_lang$core$Native_Utils.update(
-					other,
-					{
-						median: {
-							ctor: '_Tuple2',
-							_0: f(median),
-							_1: percentage
-						}
-					})
-			});
-	});
-var _user$project$Main$updateOwn = F2(
-	function (f, row) {
-		var _p2 = row.own;
-		var value = _p2._0;
-		var percentage = _p2._1;
-		return _elm_lang$core$Native_Utils.update(
-			row,
-			{
-				own: {
-					ctor: '_Tuple2',
-					_0: f(value),
-					_1: percentage
-				}
-			});
-	});
-var _user$project$Main$updateReportValue = F2(
-	function (f, report) {
-		return A2(
-			_user$project$Report_Report$map,
-			_user$project$Main$updateOtherAverage(f),
-			A2(
-				_user$project$Report_Report$map,
-				_user$project$Main$updateOtherMedian(f),
-				A2(
-					_user$project$Report_Report$map,
-					_user$project$Main$updateOwn(f),
-					report)));
-	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
-			case 'Increment':
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'Fetch':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{report: _elm_lang$core$Maybe$Nothing}),
+					{
+						ctor: '::',
+						_0: _user$project$Rest$fetchReport(model.filter),
+						_1: {ctor: '[]'}
+					});
+			case 'SetFilter':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
-							report: A2(
-								_elm_lang$core$Maybe$map,
-								_user$project$Main$updateReportValue(
-									F2(
-										function (x, y) {
-											return x + y;
-										})(1)),
-								model.report)
+							filter: A2(_user$project$Filter$update, _p0._0, model.filter)
 						}),
 					{ctor: '[]'});
-			case 'Decrement':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{
-							report: A2(
-								_elm_lang$core$Maybe$map,
-								_user$project$Main$updateReportValue(
-									A2(
-										_elm_lang$core$Basics$flip,
-										F2(
-											function (x, y) {
-												return x - y;
-											}),
-										1)),
-								model.report)
-						}),
-					{ctor: '[]'});
-			default:
-				if (_p3._0.ctor === 'Ok') {
+			case 'Fetched':
+				if (_p0._0.ctor === 'Ok') {
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{
-								report: _elm_lang$core$Maybe$Just(_p3._0._0)
+								report: _elm_lang$core$Maybe$Just(_p0._0._0)
 							}),
 						{ctor: '[]'});
 				} else {
-					var _p4 = A2(_elm_lang$core$Debug$log, 'error', _p3._0._0);
+					var _p1 = A2(_elm_lang$core$Debug$log, 'error', _p0._0._0);
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
@@ -11055,19 +11549,60 @@ var _user$project$Main$update = F2(
 							{report: _elm_lang$core$Maybe$Nothing}),
 						{ctor: '[]'});
 				}
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{level: _p0._0}),
+					{ctor: '[]'});
 		}
 	});
+var _user$project$Main$initialFilter = {
+	companyType: 1,
+	bookkeeping: 1,
+	dateRange: {fromYear: 2016, fromMonth: 1, untilYear: 2016, untilMonth: 12},
+	companies: {
+		ownCompanyId: {seacNumber: '3921V35154', ombisId: 8609},
+		typeFilteredCompanyIds: {
+			ctor: '::',
+			_0: {seacNumber: '3921V22004', ombisId: 23617},
+			_1: {
+				ctor: '::',
+				_0: {seacNumber: '3921V35154', ombisId: 8609},
+				_1: {
+					ctor: '::',
+					_0: {seacNumber: '3922V23408', ombisId: 8690},
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		geoFilteredCompanyIds: {
+			ctor: '::',
+			_0: {seacNumber: '3921V22004', ombisId: 23617},
+			_1: {
+				ctor: '::',
+				_0: {seacNumber: '3921V35154', ombisId: 8609},
+				_1: {
+					ctor: '::',
+					_0: {seacNumber: '3922V23408', ombisId: 8690},
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
 var _user$project$Main$initialModel = {
 	ctor: '_Tuple2',
-	_0: _user$project$Types$Model(_elm_lang$core$Maybe$Nothing),
-	_1: _user$project$Rest$fetchReport
+	_0: A3(_user$project$Types$Model, _elm_lang$core$Maybe$Nothing, _user$project$Main$initialFilter, _user$project$Types$Third),
+	_1: _user$project$Rest$fetchReport(_user$project$Main$initialFilter)
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{
 		init: _user$project$Main$initialModel,
 		update: _user$project$Main$update,
 		view: _user$project$Views$view,
-		subscriptions: function (_p5) {
+		subscriptions: function (_p2) {
 			return _elm_lang$core$Platform_Sub$none;
 		}
 	})();
