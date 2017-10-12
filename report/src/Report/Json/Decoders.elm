@@ -1,4 +1,4 @@
-module Report.Decoders exposing (..)
+module Report.Json.Decoders exposing (..)
 
 import Report.Account as Account
 import Report.Section as Section

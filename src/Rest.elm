@@ -1,11 +1,11 @@
 module Rest exposing (..)
 
-import Report.Decoders as Decoders
-import Decoders
+import Json.Decoders as Decoders
+import Report.Json.Decoders as Decoders
 import Types exposing (Row, Calculation)
 import Report.Report exposing (Report)
 import Http
-import Encoders
+import Json.Encoders as Encoders
 
 
 -- fetchReport : Cmd Msg

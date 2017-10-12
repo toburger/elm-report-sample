@@ -1,4 +1,4 @@
-module Encoders exposing (..)
+module Json.Encoders exposing (..)
 
 import Types
 import Json.Encode exposing (..)

@@ -1,4 +1,4 @@
-module Decoders exposing (..)
+module Json.Decoders exposing (..)
 
 import Json.Decode as Json
 import Json.Decode.Pipeline exposing (..)
