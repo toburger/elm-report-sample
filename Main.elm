@@ -1,12 +1,10 @@
 module Main exposing (..)
 
-import Types exposing (..)
+import Types exposing (Filter, Level(..), Row, CompanyId, Model, Msg(..))
 import Html
 import Rest
 import Views exposing (view)
-import Filter
 import Material
-import Model exposing (..)
 import Material.Select as Select
 
 
@@ -45,7 +43,7 @@ fetchReport =
 initialModel : ( Model, Cmd Msg )
 initialModel =
     ( Model Nothing
-        (Filter.Model initialFilter Material.model)
+        initialFilter
         Third
         Material.model
     , fetchReport initialFilter
@@ -56,19 +54,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Fetch ->
-            { model | report = Nothing } ! [ fetchReport model.filter.filter ]
+            { model | report = Nothing } ! [ fetchReport model.filter ]
 
-        SetFilter filterMsg ->
-            case filterMsg of
-                Filter.Fetch ->
-                    update Fetch model
-
-                _ ->
-                    let
-                        ( filter_, cmd_ ) =
-                            Filter.update filterMsg model.filter
-                    in
-                        { model | filter = filter_ } ! [ Cmd.map SetFilter cmd_ ]
+        SetFilter filter ->
+            { model | filter = filter } ! []
 
         Fetched (Ok report) ->
             { model | report = Just report } ! []
@@ -92,7 +81,6 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Select.subs Mdl model.mdl
-        , Sub.map SetFilter (Select.subs Filter.Mdl model.filter.mdl)
         , Material.subscriptions Mdl model
         ]
 

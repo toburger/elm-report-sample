@@ -1,7 +1,7 @@
-module Filter exposing (..)
+module Filter exposing (view)
 
 import Html exposing (..)
-import Types exposing (Filter, DateRange)
+import Types exposing (Filter, DateRange, Msg(..))
 import Material
 import Material.Select as Select
 import Material.Dropdown.Item as Item
@@ -10,31 +10,6 @@ import Material.Button as Button
 import Material.Options as Options exposing (cs, css)
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
-
-
-type alias Model =
-    { filter : Filter
-    , mdl : Material.Model
-    }
-
-
-type Msg
-    = Fetch
-    | UpdateFilter Filter
-    | Mdl (Material.Msg Msg)
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Fetch ->
-            model ! []
-
-        UpdateFilter filter ->
-            { model | filter = filter } ! []
-
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
 
 
 updateDateRange : Filter -> DateRange -> Filter
@@ -64,7 +39,7 @@ updateUntilMonth dateRange untilMonth =
 
 dateRangeMsg : (DateRange -> Int -> DateRange) -> Filter -> Int -> Msg
 dateRangeMsg f filter =
-    UpdateFilter << updateDateRange filter << f filter.dateRange
+    SetFilter << updateDateRange filter << f filter.dateRange
 
 
 viewYears : (Int -> msg) -> List (Select.Item msg)
@@ -110,7 +85,7 @@ style h =
     ]
 
 
-view : Model -> Html Msg
+view : { a | filter : Filter, mdl : Material.Model } -> Html Msg
 view { filter, mdl } =
     Card.view
         [ css "width" "600px"

@@ -5,7 +5,6 @@ import Html.Attributes exposing (colspan, rowspan, style, title, disabled)
 import Html.Lazy exposing (lazy, lazy2, lazy3)
 import Report.Section as Section
 import Report.Account as Account
-import Model exposing (..)
 import Types exposing (..)
 import Styles
 import Numeral exposing (formatWithLanguage)
@@ -218,9 +217,7 @@ view model =
                             , ( "justify-content", "center" )
                             ]
                         ]
-                        [ Html.map SetFilter
-                            (Filter.view model.filter)
-                        ]
+                        [ Filter.view model ]
                     , case model.report of
                         Just report ->
                             div []

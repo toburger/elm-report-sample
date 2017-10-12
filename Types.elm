@@ -104,3 +104,19 @@ type alias Filter =
     , dateRange : DateRange
     , companies : Companies
     }
+
+
+type alias Model =
+    { report : Maybe (Report.Report Row)
+    , filter : Filter
+    , level : Level
+    , mdl : Material.Model
+    }
+
+
+type Msg
+    = Fetch
+    | Fetched (Result Http.Error (Report.Report Row))
+    | SetFilter Filter
+    | SetLevel Level
+    | Mdl (Material.Msg Msg)

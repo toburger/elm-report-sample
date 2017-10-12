@@ -17295,6 +17295,10 @@ var _user$project$Types$Filter = F4(
 	function (a, b, c, d) {
 		return {companyType: a, bookkeeping: b, dateRange: c, companies: d};
 	});
+var _user$project$Types$Model = F4(
+	function (a, b, c, d) {
+		return {report: a, filter: b, level: c, mdl: d};
+	});
 var _user$project$Types$Fifth = {ctor: 'Fifth'};
 var _user$project$Types$Fourth = {ctor: 'Fourth'};
 var _user$project$Types$Third = {ctor: 'Third'};
@@ -17315,6 +17319,19 @@ var _user$project$Types$incrementLevel = function (level) {
 			return _user$project$Types$First;
 	}
 };
+var _user$project$Types$Mdl = function (a) {
+	return {ctor: 'Mdl', _0: a};
+};
+var _user$project$Types$SetLevel = function (a) {
+	return {ctor: 'SetLevel', _0: a};
+};
+var _user$project$Types$SetFilter = function (a) {
+	return {ctor: 'SetFilter', _0: a};
+};
+var _user$project$Types$Fetched = function (a) {
+	return {ctor: 'Fetched', _0: a};
+};
+var _user$project$Types$Fetch = {ctor: 'Fetch'};
 var _user$project$Decoders$arrayAsTuple2 = F2(
 	function (a, b) {
 		return A2(
@@ -17903,6 +17920,37 @@ var _user$project$Filter$style = function (h) {
 		}
 	};
 };
+var _user$project$Filter$viewSelect = F5(
+	function (mdl, index, label, value, items) {
+		return A5(
+			_user$project$Material_Select$render,
+			_user$project$Types$Mdl,
+			{
+				ctor: '::',
+				_0: index,
+				_1: {ctor: '[]'}
+			},
+			mdl,
+			{
+				ctor: '::',
+				_0: _user$project$Material_Select$label(label),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Material_Select$floatingLabel,
+					_1: {
+						ctor: '::',
+						_0: _user$project$Material_Select$value(
+							_elm_lang$core$Basics$toString(value)),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Material_Select$below,
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			},
+			items);
+	});
 var _user$project$Filter$viewMonths = function (msg) {
 	return A2(
 		_elm_lang$core$List$map,
@@ -17975,75 +18023,14 @@ var _user$project$Filter$updateDateRange = F2(
 			filter,
 			{dateRange: dateRange});
 	});
-var _user$project$Filter$Model = F2(
-	function (a, b) {
-		return {filter: a, mdl: b};
-	});
-var _user$project$Filter$Mdl = function (a) {
-	return {ctor: 'Mdl', _0: a};
-};
-var _user$project$Filter$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'Fetch':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
-					{ctor: '[]'});
-			case 'UpdateFilter':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{filter: _p0._0}),
-					{ctor: '[]'});
-			default:
-				return A3(_user$project$Material$update, _user$project$Filter$Mdl, _p0._0, model);
-		}
-	});
-var _user$project$Filter$viewSelect = F5(
-	function (mdl, index, label, value, items) {
-		return A5(
-			_user$project$Material_Select$render,
-			_user$project$Filter$Mdl,
-			{
-				ctor: '::',
-				_0: index,
-				_1: {ctor: '[]'}
-			},
-			mdl,
-			{
-				ctor: '::',
-				_0: _user$project$Material_Select$label(label),
-				_1: {
-					ctor: '::',
-					_0: _user$project$Material_Select$floatingLabel,
-					_1: {
-						ctor: '::',
-						_0: _user$project$Material_Select$value(
-							_elm_lang$core$Basics$toString(value)),
-						_1: {
-							ctor: '::',
-							_0: _user$project$Material_Select$below,
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			},
-			items);
-	});
-var _user$project$Filter$UpdateFilter = function (a) {
-	return {ctor: 'UpdateFilter', _0: a};
-};
 var _user$project$Filter$dateRangeMsg = F2(
 	function (f, filter) {
-		return function (_p1) {
-			return _user$project$Filter$UpdateFilter(
+		return function (_p0) {
+			return _user$project$Types$SetFilter(
 				A2(
 					_user$project$Filter$updateDateRange,
 					filter,
-					A2(f, filter.dateRange, _p1)));
+					A2(f, filter.dateRange, _p0)));
 		};
 	});
 var _user$project$Filter$showDateRanges = F2(
@@ -18177,10 +18164,9 @@ var _user$project$Filter$showDateRanges = F2(
 				}
 			});
 	});
-var _user$project$Filter$Fetch = {ctor: 'Fetch'};
-var _user$project$Filter$view = function (_p2) {
-	var _p3 = _p2;
-	var _p4 = _p3.mdl;
+var _user$project$Filter$view = function (_p1) {
+	var _p2 = _p1;
+	var _p3 = _p2.mdl;
 	return A2(
 		_user$project$Material_Card$view,
 		{
@@ -18220,7 +18206,7 @@ var _user$project$Filter$view = function (_p2) {
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: A2(_user$project$Filter$showDateRanges, _p4, _p3.filter),
+						_0: A2(_user$project$Filter$showDateRanges, _p3, _p2.filter),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -18236,13 +18222,13 @@ var _user$project$Filter$view = function (_p2) {
 							ctor: '::',
 							_0: A5(
 								_user$project$Material_Button$render,
-								_user$project$Filter$Mdl,
+								_user$project$Types$Mdl,
 								{
 									ctor: '::',
 									_0: 0,
 									_1: {ctor: '[]'}
 								},
-								_p4,
+								_p3,
 								{
 									ctor: '::',
 									_0: _user$project$Material_Button$ripple,
@@ -18254,7 +18240,7 @@ var _user$project$Filter$view = function (_p2) {
 											_0: _user$project$Material_Button$raised,
 											_1: {
 												ctor: '::',
-												_0: _user$project$Material_Options$onClick(_user$project$Filter$Fetch),
+												_0: _user$project$Material_Options$onClick(_user$project$Types$Fetch),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -18345,23 +18331,6 @@ var _user$project$Rest$fetchReport = F2(
 			_user$project$Report_Decoders$report(_user$project$Decoders$row));
 		return A2(_elm_lang$http$Http$send, msg, request);
 	});
-var _user$project$Model$Model = F4(
-	function (a, b, c, d) {
-		return {report: a, filter: b, level: c, mdl: d};
-	});
-var _user$project$Model$Mdl = function (a) {
-	return {ctor: 'Mdl', _0: a};
-};
-var _user$project$Model$SetLevel = function (a) {
-	return {ctor: 'SetLevel', _0: a};
-};
-var _user$project$Model$SetFilter = function (a) {
-	return {ctor: 'SetFilter', _0: a};
-};
-var _user$project$Model$Fetched = function (a) {
-	return {ctor: 'Fetched', _0: a};
-};
-var _user$project$Model$Fetch = {ctor: 'Fetch'};
 var _user$project$Styles_ops = _user$project$Styles_ops || {};
 _user$project$Styles_ops['=>'] = F2(
 	function (v0, v1) {
@@ -19092,7 +19061,7 @@ var _user$project$Views$viewLevel = F2(
 						ctor: '::',
 						_0: A5(
 							_user$project$Material_Button$render,
-							_user$project$Model$Mdl,
+							_user$project$Types$Mdl,
 							{
 								ctor: '::',
 								_0: 0,
@@ -19102,7 +19071,7 @@ var _user$project$Views$viewLevel = F2(
 							{
 								ctor: '::',
 								_0: _user$project$Material_Options$onClick(
-									_user$project$Model$SetLevel(_user$project$Types$First)),
+									_user$project$Types$SetLevel(_user$project$Types$First)),
 								_1: {
 									ctor: '::',
 									_0: _user$project$Material_Options$disabled(
@@ -19134,7 +19103,7 @@ var _user$project$Views$viewLevel = F2(
 							ctor: '::',
 							_0: A5(
 								_user$project$Material_Button$render,
-								_user$project$Model$Mdl,
+								_user$project$Types$Mdl,
 								{
 									ctor: '::',
 									_0: 1,
@@ -19144,7 +19113,7 @@ var _user$project$Views$viewLevel = F2(
 								{
 									ctor: '::',
 									_0: _user$project$Material_Options$onClick(
-										_user$project$Model$SetLevel(_user$project$Types$Second)),
+										_user$project$Types$SetLevel(_user$project$Types$Second)),
 									_1: {
 										ctor: '::',
 										_0: _user$project$Material_Options$disabled(
@@ -19176,7 +19145,7 @@ var _user$project$Views$viewLevel = F2(
 								ctor: '::',
 								_0: A5(
 									_user$project$Material_Button$render,
-									_user$project$Model$Mdl,
+									_user$project$Types$Mdl,
 									{
 										ctor: '::',
 										_0: 2,
@@ -19186,7 +19155,7 @@ var _user$project$Views$viewLevel = F2(
 									{
 										ctor: '::',
 										_0: _user$project$Material_Options$onClick(
-											_user$project$Model$SetLevel(_user$project$Types$Third)),
+											_user$project$Types$SetLevel(_user$project$Types$Third)),
 										_1: {
 											ctor: '::',
 											_0: _user$project$Material_Options$disabled(
@@ -19218,7 +19187,7 @@ var _user$project$Views$viewLevel = F2(
 									ctor: '::',
 									_0: A5(
 										_user$project$Material_Button$render,
-										_user$project$Model$Mdl,
+										_user$project$Types$Mdl,
 										{
 											ctor: '::',
 											_0: 3,
@@ -19228,7 +19197,7 @@ var _user$project$Views$viewLevel = F2(
 										{
 											ctor: '::',
 											_0: _user$project$Material_Options$onClick(
-												_user$project$Model$SetLevel(_user$project$Types$Fourth)),
+												_user$project$Types$SetLevel(_user$project$Types$Fourth)),
 											_1: {
 												ctor: '::',
 												_0: _user$project$Material_Options$disabled(
@@ -19451,7 +19420,7 @@ var _user$project$Views$viewAccount = F4(
 									ctor: '::',
 									_0: A2(
 										_user$project$Material_Tooltip$attach,
-										_user$project$Model$Mdl,
+										_user$project$Types$Mdl,
 										{
 											ctor: '::',
 											_0: 0,
@@ -19478,7 +19447,7 @@ var _user$project$Views$viewAccount = F4(
 				ctor: '::',
 				_0: A5(
 					_user$project$Material_Tooltip$render,
-					_user$project$Model$Mdl,
+					_user$project$Types$Mdl,
 					{
 						ctor: '::',
 						_0: 0,
@@ -19724,7 +19693,7 @@ var _user$project$Views$view = function (model) {
 		_user$project$Material_Color$DeepOrange,
 		A4(
 			_user$project$Material_Layout$render,
-			_user$project$Model$Mdl,
+			_user$project$Types$Mdl,
 			model.mdl,
 			{ctor: '[]'},
 			{
@@ -19771,10 +19740,7 @@ var _user$project$Views$view = function (model) {
 									},
 									{
 										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$map,
-											_user$project$Model$SetFilter,
-											_user$project$Filter$view(model.filter)),
+										_0: _user$project$Filter$view(model),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -19810,92 +19776,65 @@ var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
 			ctor: '::',
-			_0: A2(_user$project$Material_Select$subs, _user$project$Model$Mdl, model.mdl),
+			_0: A2(_user$project$Material_Select$subs, _user$project$Types$Mdl, model.mdl),
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_elm_lang$core$Platform_Sub$map,
-					_user$project$Model$SetFilter,
-					A2(_user$project$Material_Select$subs, _user$project$Filter$Mdl, model.filter.mdl)),
-				_1: {
-					ctor: '::',
-					_0: A2(_user$project$Material$subscriptions, _user$project$Model$Mdl, model),
-					_1: {ctor: '[]'}
-				}
+				_0: A2(_user$project$Material$subscriptions, _user$project$Types$Mdl, model),
+				_1: {ctor: '[]'}
 			}
 		});
 };
-var _user$project$Main$fetchReport = _user$project$Rest$fetchReport(_user$project$Model$Fetched);
+var _user$project$Main$fetchReport = _user$project$Rest$fetchReport(_user$project$Types$Fetched);
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		update:
-		while (true) {
-			var _p0 = msg;
-			switch (_p0.ctor) {
-				case 'Fetch':
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'Fetch':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{report: _elm_lang$core$Maybe$Nothing}),
+					{
+						ctor: '::',
+						_0: _user$project$Main$fetchReport(model.filter),
+						_1: {ctor: '[]'}
+					});
+			case 'SetFilter':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{filter: _p0._0}),
+					{ctor: '[]'});
+			case 'Fetched':
+				if (_p0._0.ctor === 'Ok') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								report: _elm_lang$core$Maybe$Just(_p0._0._0)
+							}),
+						{ctor: '[]'});
+				} else {
+					var _p1 = A2(_elm_lang$core$Debug$log, 'error', _p0._0._0);
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
 							{report: _elm_lang$core$Maybe$Nothing}),
-						{
-							ctor: '::',
-							_0: _user$project$Main$fetchReport(model.filter.filter),
-							_1: {ctor: '[]'}
-						});
-				case 'SetFilter':
-					var _p3 = _p0._0;
-					var _p1 = _p3;
-					if (_p1.ctor === 'Fetch') {
-						var _v2 = _user$project$Model$Fetch,
-							_v3 = model;
-						msg = _v2;
-						model = _v3;
-						continue update;
-					} else {
-						var _p2 = A2(_user$project$Filter$update, _p3, model.filter);
-						var filter_ = _p2._0;
-						var cmd_ = _p2._1;
-						return A2(
-							_elm_lang$core$Platform_Cmd_ops['!'],
-							_elm_lang$core$Native_Utils.update(
-								model,
-								{filter: filter_}),
-							{
-								ctor: '::',
-								_0: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Model$SetFilter, cmd_),
-								_1: {ctor: '[]'}
-							});
-					}
-				case 'Fetched':
-					if (_p0._0.ctor === 'Ok') {
-						return A2(
-							_elm_lang$core$Platform_Cmd_ops['!'],
-							_elm_lang$core$Native_Utils.update(
-								model,
-								{
-									report: _elm_lang$core$Maybe$Just(_p0._0._0)
-								}),
-							{ctor: '[]'});
-					} else {
-						var _p4 = A2(_elm_lang$core$Debug$log, 'error', _p0._0._0);
-						return A2(
-							_elm_lang$core$Platform_Cmd_ops['!'],
-							_elm_lang$core$Native_Utils.update(
-								model,
-								{report: _elm_lang$core$Maybe$Nothing}),
-							{ctor: '[]'});
-					}
-				case 'SetLevel':
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{level: _p0._0}),
 						{ctor: '[]'});
-				default:
-					return A3(_user$project$Material$update, _user$project$Model$Mdl, _p0._0, model);
-			}
+				}
+			case 'SetLevel':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{level: _p0._0}),
+					{ctor: '[]'});
+			default:
+				return A3(_user$project$Material$update, _user$project$Types$Mdl, _p0._0, model);
 		}
 	});
 var _user$project$Main$initialFilter = {
@@ -19934,12 +19873,7 @@ var _user$project$Main$initialFilter = {
 };
 var _user$project$Main$initialModel = {
 	ctor: '_Tuple2',
-	_0: A4(
-		_user$project$Model$Model,
-		_elm_lang$core$Maybe$Nothing,
-		A2(_user$project$Filter$Model, _user$project$Main$initialFilter, _user$project$Material$model),
-		_user$project$Types$Third,
-		_user$project$Material$model),
+	_0: A4(_user$project$Types$Model, _elm_lang$core$Maybe$Nothing, _user$project$Main$initialFilter, _user$project$Types$Third, _user$project$Material$model),
 	_1: _user$project$Main$fetchReport(_user$project$Main$initialFilter)
 };
 var _user$project$Main$main = _elm_lang$html$Html$program(
