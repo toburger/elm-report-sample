@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Report.Report as Report
 import Http
+import Material
 
 
 type alias Number =
@@ -34,20 +35,6 @@ type alias Row =
 
 type alias Report =
     Report.Report Row
-
-
-type alias Model =
-    { report : Maybe Report
-    , filter : Filter
-    , level : Level
-    }
-
-
-type Msg filterMsg
-    = Fetch
-    | Fetched (Result Http.Error Report)
-    | SetFilter filterMsg
-    | SetLevel Level
 
 
 type Level

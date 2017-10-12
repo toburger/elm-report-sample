@@ -5,10 +5,9 @@ import Html
 import Rest
 import Views exposing (view)
 import Filter
-
-
-type alias Msg =
-    Types.Msg Filter.Msg
+import Material
+import Model exposing (..)
+import Material.Select as Select
 
 
 initialFilter : Filter
@@ -23,37 +22,56 @@ initialFilter =
         }
     , companies =
         { ownCompanyId =
-            { seacNumber = "3921V35154", ombisId = 8609 }
+            CompanyId "3921V35154" 8609
         , typeFilteredCompanyIds =
-            [ { seacNumber = "3921V22004", ombisId = 23617 }
-            , { seacNumber = "3921V35154", ombisId = 8609 }
-            , { seacNumber = "3922V23408", ombisId = 8690 }
+            [ CompanyId "3921V22004" 23617
+            , CompanyId "3921V35154" 8609
+            , CompanyId "3922V23408" 8690
             ]
         , geoFilteredCompanyIds =
-            [ { seacNumber = "3921V22004", ombisId = 23617 }
-            , { seacNumber = "3921V35154", ombisId = 8609 }
-            , { seacNumber = "3922V23408", ombisId = 8690 }
+            [ CompanyId "3921V22004" 23617
+            , CompanyId "3921V35154" 8609
+            , CompanyId "3922V23408" 8690
             ]
         }
     }
 
 
+fetchReport : Filter -> Cmd Msg
+fetchReport =
+    Rest.fetchReport Fetched
+
+
 initialModel : ( Model, Cmd Msg )
 initialModel =
-    ( Model Nothing initialFilter Third, Rest.fetchReport initialFilter )
+    ( Model Nothing
+        (Filter.Model initialFilter Material.model)
+        Third
+        Material.model
+    , fetchReport initialFilter
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Fetch ->
-            { model | report = Nothing } ! [ Rest.fetchReport model.filter ]
+            { model | report = Nothing } ! [ fetchReport model.filter.filter ]
+
+        SetFilter filterMsg ->
+            case filterMsg of
+                Filter.Fetch ->
+                    update Fetch model
+
+                _ ->
+                    let
+                        ( filter_, cmd_ ) =
+                            Filter.update filterMsg model.filter
+                    in
+                        { model | filter = filter_ } ! [ Cmd.map SetFilter cmd_ ]
 
         Fetched (Ok report) ->
             { model | report = Just report } ! []
-
-        SetFilter filterMsg ->
-            { model | filter = Filter.update filterMsg model.filter } ! []
 
         Fetched (Err msg) ->
             let
@@ -66,6 +84,18 @@ update msg model =
         SetLevel level ->
             { model | level = level } ! []
 
+        Mdl msg_ ->
+            Material.update Mdl msg_ model
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ Select.subs Mdl model.mdl
+        , Sub.map SetFilter (Select.subs Filter.Mdl model.filter.mdl)
+        , Material.subscriptions Mdl model
+        ]
+
 
 main : Program Never Model Msg
 main =
@@ -73,5 +103,5 @@ main =
         { init = initialModel
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }

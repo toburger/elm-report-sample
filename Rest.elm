@@ -2,7 +2,8 @@ module Rest exposing (..)
 
 import Report.Decoders as Decoders
 import Decoders
-import Types exposing (Row, Calculation, Msg(Fetched))
+import Types exposing (Row, Calculation)
+import Report.Report exposing (Report)
 import Http
 import Encoders
 
@@ -18,8 +19,8 @@ import Encoders
 --         Http.send Fetched request
 
 
-fetchReport : Types.Filter -> Cmd (Msg filterMsg)
-fetchReport filter =
+fetchReport : (Result Http.Error (Report Row) -> msg) -> Types.Filter -> Cmd msg
+fetchReport msg filter =
     let
         url =
             "http://localhost:8083/api/reports/benchmark/investmentSuccessBalance"
@@ -30,4 +31,4 @@ fetchReport filter =
         request =
             Http.post url body (Decoders.report Decoders.row)
     in
-        Http.send Fetched request
+        Http.send msg request
