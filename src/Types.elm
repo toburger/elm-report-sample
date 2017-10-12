@@ -3,6 +3,7 @@ module Types exposing (..)
 import Report.Report as Report
 import Http
 import Material
+import RemoteData exposing (WebData)
 
 
 type alias Number =
@@ -88,7 +89,11 @@ type alias CompanyId =
 
 
 type alias DateRange =
-    { fromYear : Int, fromMonth : Int, untilYear : Int, untilMonth : Int }
+    { fromYear : Int
+    , fromMonth : Int
+    , untilYear : Int
+    , untilMonth : Int
+    }
 
 
 type alias Companies =
@@ -107,7 +112,7 @@ type alias Filter =
 
 
 type alias Model =
-    { report : Maybe (Report.Report Row)
+    { report : WebData (Report.Report Row)
     , filter : Filter
     , level : Level
     , mdl : Material.Model
@@ -116,7 +121,7 @@ type alias Model =
 
 type Msg
     = Fetch
-    | Fetched (Result Http.Error (Report.Report Row))
+    | Fetched (WebData (Report.Report Row))
     | SetFilter Filter
     | SetLevel Level
     | Mdl (Material.Msg Msg)

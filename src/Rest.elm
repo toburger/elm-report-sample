@@ -3,32 +3,31 @@ module Rest exposing (..)
 import Json.Decoders as Decoders
 import Report.Json.Decoders as Decoders
 import Types exposing (Row, Calculation)
-import Report.Report exposing (Report)
 import Http
 import Json.Encoders as Encoders
+import RemoteData
 
 
--- fetchReport : Cmd Msg
--- fetchReport =
+-- fetchReport : Types.Filter -> Cmd Types.Msg
+-- fetchReport _ =
 --     let
 --         url =
 --             "./api/data.json"
---         request =
---             Http.get url (Decoders.report Decoders.row)
 --     in
---         Http.send Fetched request
+--         Http.get url (Decoders.report Decoders.row)
+--             |> RemoteData.sendRequest
+--             |> Cmd.map Types.Fetched
 
 
-fetchReport : (Result Http.Error (Report Row) -> msg) -> Types.Filter -> Cmd msg
-fetchReport msg filter =
+fetchReport : Types.Filter -> Cmd Types.Msg
+fetchReport filter =
     let
         url =
             "http://localhost:8083/api/reports/benchmark/investmentSuccessBalance"
 
         body =
             Http.jsonBody (Encoders.filter filter)
-
-        request =
-            Http.post url body (Decoders.report Decoders.row)
     in
-        Http.send msg request
+        Http.post url body (Decoders.report Decoders.row)
+            |> RemoteData.sendRequest
+            |> Cmd.map Types.Fetched

@@ -20,6 +20,8 @@ import Material.Button as Button
 import Material.Tooltip as Tooltip
 import Material.Table as Table
 import Material.Typography as Typo
+import Material.Progress as Loading
+import RemoteData
 
 
 asCurrency : Float -> String
@@ -199,15 +201,40 @@ viewReport mdl level report =
         )
 
 
+viewLoading : Html msg
+viewLoading =
+    div
+        [ style
+            [ ( "display", "flex" )
+            , ( "justify-content", "center" )
+            ]
+        ]
+        [ Loading.indeterminate
+        ]
+
+
+viewError : err -> Html msg
+viewError err =
+    Options.styled p
+        [ Typo.caption
+        , Typo.center
+        ]
+        [ text ("Error : " ++ toString err) ]
+
+
 view : Model -> Html Msg
 view model =
     Scheme.topWithScheme Color.Brown Color.DeepOrange <|
         Layout.render Mdl
             model.mdl
-            []
+            [ Layout.selectedTab 0
+            ]
             { header = []
             , drawer = []
-            , tabs = ( [], [] )
+            , tabs =
+                ( [{- text "Investment Success Balance" -}]
+                , []
+                )
             , main =
                 [ div []
                     [ node "style" [] [ text """td, th { padding: 4px }""" ]
@@ -219,14 +246,20 @@ view model =
                         ]
                         [ Filter.view model ]
                     , case model.report of
-                        Just report ->
+                        RemoteData.NotAsked ->
+                            text ""
+
+                        RemoteData.Loading ->
+                            viewLoading
+
+                        RemoteData.Failure err ->
+                            viewError err
+
+                        RemoteData.Success report ->
                             div []
                                 [ lazy2 viewLevel model.mdl model.level
                                 , lazy3 viewReport model.mdl model.level report
                                 ]
-
-                        Nothing ->
-                            text ""
                     ]
                 ]
             }

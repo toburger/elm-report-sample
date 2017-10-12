@@ -6,6 +6,7 @@ import Rest
 import Views exposing (view)
 import Material
 import Material.Select as Select
+import RemoteData
 
 
 initialFilter : Filter
@@ -35,18 +36,13 @@ initialFilter =
     }
 
 
-fetchReport : Filter -> Cmd Msg
-fetchReport =
-    Rest.fetchReport Fetched
-
-
 initialModel : ( Model, Cmd Msg )
 initialModel =
-    ( Model Nothing
+    ( Model RemoteData.Loading
         initialFilter
         Third
         Material.model
-    , fetchReport initialFilter
+    , Rest.fetchReport initialFilter
     )
 
 
@@ -54,21 +50,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Fetch ->
-            { model | report = Nothing } ! [ fetchReport model.filter ]
+            { model | report = RemoteData.Loading }
+                ! [ Rest.fetchReport model.filter ]
 
         SetFilter filter ->
             { model | filter = filter } ! []
 
-        Fetched (Ok report) ->
-            { model | report = Just report } ! []
-
-        Fetched (Err msg) ->
-            let
-                _ =
-                    Debug.log "error" msg
-            in
-                { model | report = Nothing }
-                    ! []
+        Fetched report ->
+            { model | report = report } ! []
 
         SetLevel level ->
             { model | level = level } ! []
